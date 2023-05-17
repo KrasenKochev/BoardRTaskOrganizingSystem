@@ -3,6 +3,7 @@ import java.util.List;
 
 public class Board {
     private static List<BoardItem> items;
+    private static int count = Board.items.size();
     private Board() {
     }
     public void addItem(BoardItem item) {
@@ -12,4 +13,6 @@ public class Board {
     public  List<BoardItem> getItems() {
         return new ArrayList<>(items);
     }
+
+
 }

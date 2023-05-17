@@ -1,5 +1,7 @@
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 public class BoardItem {
     private static final int MIN_LENGTH_TITLE = 5;
@@ -7,8 +9,7 @@ public class BoardItem {
     private String title;
     private LocalDate dueDate;
     private Status status;
-    private  int counter;
-    private static int counterInstances;
+    private List<EventLog>history;
     public BoardItem(String title, LocalDate dueDate) {
         this(title,dueDate,Status.Open);
     }
@@ -16,17 +17,20 @@ public class BoardItem {
         setTitle(title);
         setDueDate(dueDate);
         setStatus(status);
-        EventLog eventLog = new EventLog(String.format("Item created: %s %s %s",getTitle(),getStatus(),getDueDate()));
+        history=new ArrayList<>();
+        addEventLog("Item created: '" + title +"', [" + this.status + " | " + this.dueDate + "]");
+
     }
+
     public void setTitle(String title) {
         if (title == null || title.length() < MIN_LENGTH_TITLE || title.length() > MAX_LENGTH_TITLE) {
             throw new IllegalArgumentException ("Invalid title");
         }
-        EventLog eventLog = new EventLog(String.format("Title changed from %s to %s",getTitle(),title));
-        counter=counterInstances++;
+        if (this.title != null){
+            addEventLog("Title changed from " + this.title + " to " + title);
+        }
         this.title = title;
     }
-
     public String getTitle() {
         return this.title;}
 
@@ -34,8 +38,9 @@ public class BoardItem {
         if (dueDate.isBefore(LocalDate.now())) {
             throw new IllegalArgumentException("Invalid date");
         }
-        EventLog eventLog = new EventLog(String.format("DueDate changed from %s",dueDate));
-        counter=counterInstances++;
+        if (this.dueDate != null){
+           addEventLog("DueDate changed from " + this.dueDate + " to " + dueDate);
+        }
         this.dueDate = dueDate;
     }
 
@@ -49,7 +54,6 @@ public class BoardItem {
         }
         this.status = status;
     }
-
     public Status getStatus() {
         return this.status;
     }
@@ -57,47 +61,45 @@ public class BoardItem {
     public void revertStatus() {
         // Check current status and revert if possible
         if (status.equals(Status.Verified)){
-            EventLog eventLog = new EventLog("Status changed from Verified to Done");
-            counter=counterInstances++;
-            setStatus(Status.Done);}
+            setStatus(Status.Done);
+            addEventLog("Status changed from Verified to " + status);
+        }
         else if (status.equals(Status.Done)){
-            EventLog eventLog = new EventLog("Status changed from Done to InProgress");
-            counter=counterInstances++;
-            setStatus(Status.InProgress);}
+            setStatus(Status.InProgress);
+            addEventLog("Status changed from Done to " + status);
+        }
         else if (status.equals(Status.InProgress)){
-            EventLog eventLog = new EventLog("Status changed from InProgress to To Do");
-            counter=counterInstances++;
-            setStatus(Status.Todo);}
+            setStatus(Status.Todo);
+            addEventLog("Status changed from In Progress to " + status);
+        }
         else if (status.equals(Status.Todo)){
-            EventLog eventLog = new EventLog("Status changed from To Do to Open");
-            counter=counterInstances++;
-            setStatus(Status.Open);}
+            setStatus(Status.Open);
+            addEventLog("Status changed from ToDo to " + status);
+        }
         else if(status.equals(Status.Open)){
-            EventLog eventLog = new EventLog("Can't revert, already at Open");
-            counter=counterInstances++;
+            addEventLog("Can't revert, already at " + status);
         }
     }
     public void advanceStatus() {
         // Check current status and advance if possible
         if (status.equals(Status.Open)){
-            EventLog eventLog = new EventLog("Status changed from Open to To Do");
-            counter=counterInstances++;
-            setStatus(Status.Todo);}
+            setStatus(Status.Todo);
+            addEventLog("Status changed from Open to " + status);
+        }
         else if (status.equals(Status.Todo)){
-            EventLog eventLog = new EventLog("Status changed from To Do to InProgress");
-            counter=counterInstances++;
-            setStatus(Status.InProgress);}
+            setStatus(Status.InProgress);
+            addEventLog("Status changed from ToDo to " + status);
+        }
         else if (status.equals(Status.InProgress)){
-            EventLog eventLog = new EventLog("Status changed from InProgress to Done");
-            counter=counterInstances++;
-            setStatus(Status.Done);}
+            setStatus(Status.Done);
+            addEventLog("Status changed from InProgress to " + status);
+        }
         else if (status.equals(Status.Done)){
-            EventLog eventLog = new EventLog("Status changed from Done to Verified");
-            counter=counterInstances++;
-            setStatus(Status.Verified);}
+            setStatus(Status.Verified);
+            addEventLog("Status changed from Done to " + status);
+        }
         else if (status.equals(Status.Verified)) {
-            EventLog eventLog = new EventLog("Can't advance, already at Verified");
-            counter=counterInstances++;
+            addEventLog("Can't advance, already at " + status);
         }
     }
     public String viewInfo() {
@@ -105,14 +107,18 @@ public class BoardItem {
     }
 
     public String displayHistory(){
-        ArrayList <String> collection = new ArrayList<String>();
-        collection.add()
-
-
-        StringBuilder result = new StringBuilder();
-        for (int i = counter; i < counterInstances; i++) {
-            result.append(String.format()) ;
+        StringBuilder sb = new StringBuilder();
+        for (EventLog event : history) {
+            sb.append(event.viewInfo()).append("\n");
         }
-        return result.toString();
+
+        System.out.println(sb.toString());
+        return sb.toString();
     }
+    private void addEventLog(String description) {
+        EventLog eventLog = new EventLog(description);
+        history.add(eventLog);
+    }
+
+
 }
