@@ -1,12 +1,14 @@
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 public class EventLog {
     private final String descriptionLog;
     private final LocalDateTime timeStamp;
     private static DateTimeFormatter formatter;
 
     {
-        formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
     }
 
     public EventLog(String descriptionLog, LocalDateTime timeStamp) {
