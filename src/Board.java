@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 public class Board {
-    public static final String ITEM_ALREADY_IN_THE_LIST = "Item already in the list";
+    private static final String ITEM_ALREADY_IN_THE_LIST = "Item already in the list";
     private final List<BoardItem> items;
     public Board() {
         this.items=new ArrayList<>();

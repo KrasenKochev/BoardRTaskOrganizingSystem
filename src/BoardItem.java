@@ -74,7 +74,7 @@ public class BoardItem {
     }
     protected void advanceStatus() {
         Status previousStatus = this.status;
-        if (status != Status.Open) {
+        if (status != Status.Verified) {
             status = status.setNextStatus();
             addEventLog("Status changed from " + previousStatus +
                     " to " + status);
