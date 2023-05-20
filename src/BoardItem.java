@@ -5,15 +5,15 @@ import java.util.List;
 public class BoardItem {
     private static final int MIN_LENGTH_TITLE = 5;
     private static final int MAX_LENGTH_TITLE = 30;
-    public static final String ERROR_STATUS_CANNOT_BE_NULL = "status cannot be null";
-    public static final String ERROR_INVALID_DATE = "Invalid date";
-    public static final String ERROR_INVALID_TITLE = "Invalid title";
-    public static final String ERROR_CANNOT_REVERT_STATUS = "Cannot revert, already at OPEN";
-    public static final String ERROR_CANNOT_ADVANCE_STATUS = "Can't advance, already at Verified";
-    private String title;
-    private LocalDate dueDate;
-    private Status status;
-    private final List<EventLog>history;
+    private static final String ERROR_STATUS_CANNOT_BE_NULL = "status cannot be null";
+    private static final String ERROR_INVALID_DATE = "Invalid date";
+    private static final String ERROR_INVALID_TITLE = "Invalid title";
+    private static final String ERROR_CANNOT_REVERT_STATUS = "Cannot revert, already at OPEN";
+    private static final String ERROR_CANNOT_ADVANCE_STATUS = "Can't advance, already at Verified";
+    protected String title;
+    protected LocalDate dueDate;
+    protected Status status;
+    protected final List<EventLog>history;
     public BoardItem(String title, LocalDate dueDate) {
         this(title,dueDate,Status.Open);
     }
@@ -26,7 +26,7 @@ public class BoardItem {
 
     }
 
-    public void setTitle(String title) {
+    protected void setTitle(String title) {
         if (title == null || title.length() < MIN_LENGTH_TITLE || title.length() > MAX_LENGTH_TITLE) {
             throw new IllegalArgumentException (ERROR_INVALID_TITLE);
         }
@@ -38,7 +38,7 @@ public class BoardItem {
     public String getTitle() {
         return this.title;}
 
-    public void setDueDate(LocalDate dueDate) {
+    protected void setDueDate(LocalDate dueDate) {
         if (dueDate.isBefore(LocalDate.now())) {
             throw new IllegalArgumentException(ERROR_INVALID_DATE);
         }
@@ -52,17 +52,17 @@ public class BoardItem {
         return this.dueDate;
     }
 
-    public void setStatus(Status status) {
+    protected void setStatus(Status status) {
         if (status == null){
             throw new  IllegalArgumentException(ERROR_STATUS_CANNOT_BE_NULL);
         }
         this.status = status;
     }
-    public Status getStatus() {
+    protected Status getStatus() {
         return this.status;
     }
 
-    public void revertStatus() {
+    protected void revertStatus() {
         Status previousStatus = this.status;
         if (status != Status.Open) {
             status = status.setPreviousStatus();
@@ -72,7 +72,7 @@ public class BoardItem {
             System.out.println(ERROR_CANNOT_REVERT_STATUS);
         }
     }
-    public void advanceStatus() {
+    protected void advanceStatus() {
         Status previousStatus = this.status;
         if (status != Status.Open) {
             status = status.setNextStatus();
@@ -94,7 +94,7 @@ public class BoardItem {
         System.out.println(sb.toString());
         return sb.toString();
     }
-    private void addEventLog(String description) {
+    protected void addEventLog(String description) {
         EventLog eventLog = new EventLog(description);
         history.add(eventLog);
     }
